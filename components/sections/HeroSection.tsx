@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { ChevronDown, Calendar, ArrowRight, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 
 const heroSlides = [
   {
@@ -88,6 +88,13 @@ const textVariants = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
 };
 
+const heroStats = [
+  { value: 50, suffix: '+', label: 'Rooms' },
+  { value: 100, suffix: '%', label: 'Satisfaction' },
+  { value: 24, suffix: '/7', label: 'Service' },
+  { value: 5, label: 'Stars' },
+];
+
 interface HeroSectionProps {
   onBookNow?: () => void;
 }
@@ -150,10 +157,13 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
           exit="exit"
           className="absolute inset-0"
         >
-          <img
+          <Image
             src={slide.image}
             alt={slide.title}
-            className="h-full w-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
           {/* Multi-layer overlay for depth */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent" />
@@ -182,35 +192,35 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="inline-flex items-center gap-2 mb-6"
+                  className="inline-flex items-center gap-2 mb-4 sm:mb-6"
                 >
-                  <span className="h-px w-8 bg-gold-400" />
-                  <span className="text-gold-400 text-sm tracking-[0.25em] uppercase font-medium">
+                  <span className="h-px w-6 sm:w-8 bg-gold-400" />
+                  <span className="text-gold-400 text-[10px] sm:text-sm tracking-[0.2em] sm:tracking-[0.25em] uppercase font-medium">
                     {slide.badge}
                   </span>
                 </motion.div>
 
                 {/* Heading */}
-                <div className="overflow-hidden mb-2">
+                <div className="overflow-hidden mb-1 sm:mb-2">
                   <motion.h1
                     custom={0.1}
                     variants={textVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight"
+                    className="font-playfair text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight"
                   >
                     {slide.title}
                   </motion.h1>
                 </div>
-                <div className="overflow-hidden mb-6">
+                <div className="overflow-hidden mb-4 sm:mb-6">
                   <motion.h1
                     custom={0.2}
                     variants={textVariants}
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold leading-tight"
+                    className="font-playfair text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-tight"
                     style={{ color: '#D4AF37' }}
                   >
                     {slide.subtitle}
@@ -224,7 +234,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="text-white/80 text-lg md:text-xl max-w-xl mb-8 leading-relaxed"
+                  className="text-white/80 text-sm sm:text-lg md:text-xl max-w-xs sm:max-w-sm md:max-w-xl mb-6 sm:mb-8 leading-relaxed"
                 >
                   {slide.description}
                 </motion.p>
@@ -236,20 +246,20 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="flex flex-wrap gap-4"
+                  className="flex flex-wrap gap-2 sm:gap-4"
                 >
                   <a
                     href={slide.href}
-                    className="group flex items-center gap-2 bg-gold-400 text-royal-900 px-7 py-4 rounded-md font-semibold text-base hover:bg-gold-500 transition-all duration-300 shadow-lg hover:shadow-gold-400/30 hover:shadow-2xl"
+                    className="group flex items-center gap-2 bg-gold-400 text-royal-900 px-4 sm:px-7 py-3 sm:py-4 rounded-md font-semibold text-xs sm:text-base hover:bg-gold-500 transition-all duration-300 shadow-lg hover:shadow-gold-400/30 hover:shadow-2xl"
                   >
                     {slide.cta}
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 transition-transform group-hover:translate-x-1" />
                   </a>
                   <button
                     onClick={onBookNow}
-                    className="flex items-center gap-2 border-2 border-white/50 text-white px-7 py-4 rounded-md font-semibold text-base hover:border-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                    className="flex items-center gap-2 border-2 border-white/50 text-white px-4 sm:px-7 py-3 sm:py-4 rounded-md font-semibold text-xs sm:text-base hover:border-white hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
                   >
-                    <Calendar className="w-4 h-4" />
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                     Book Now
                   </button>
                 </motion.div>
@@ -259,19 +269,29 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         </div>
       </div>
 
+      {/* Quick Stats - Top Right */}
+      <div className="absolute top-1/2 right-4 sm:right-6 -translate-y-1/2 hidden xl:flex flex-col gap-3 mt-40">
+        {heroStats.map((stat) => (
+          <div key={stat.label} className="text-white/60 text-xs text-center">
+            <p className="font-playfair text-xl font-bold text-white">{stat.value}{stat.suffix || ''}</p>
+            <p>{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Slide Thumbnails — right side */}
-      <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-3">
+      <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-2 sm:gap-3">
         {heroSlides.map((s, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
             className={`relative overflow-hidden rounded-lg transition-all duration-500 ${
               i === current
-                ? 'w-20 h-14 ring-2 ring-gold-400 ring-offset-2 ring-offset-transparent'
-                : 'w-16 h-11 opacity-50 hover:opacity-80'
+                ? 'w-16 sm:w-20 h-10 sm:h-14 ring-2 ring-gold-400 ring-offset-2 ring-offset-transparent'
+                : 'w-12 sm:w-16 h-8 sm:h-11 opacity-50 hover:opacity-80'
             }`}
           >
-            <img src={s.image} alt={s.title} className="w-full h-full object-cover" />
+            <Image src={s.image} alt={s.title} fill sizes="80px" className="object-cover" />
             {i === current && (
               <div className="absolute bottom-0 left-0 h-0.5 bg-gold-400" style={{ width: `${progress}%`, transition: 'width 0.05s linear' }} />
             )}
@@ -280,21 +300,21 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
       </div>
 
       {/* Bottom Controls */}
-      <div className="absolute bottom-8 left-0 right-0">
+      <div className="absolute bottom-6 sm:bottom-8 left-0 right-0">
         <div className="container-custom flex items-center justify-between">
           {/* Slide counter */}
-          <div className="flex items-center gap-4">
-            <span className="font-playfair text-4xl font-bold text-white/30">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <span className="font-playfair text-2xl sm:text-4xl font-bold text-white/30">
               0{current + 1}
             </span>
-            <div className="h-px w-12 bg-white/30" />
-            <span className="text-sm text-white/50 tracking-wider">
+            <div className="h-px w-8 sm:w-12 bg-white/30" />
+            <span className="text-xs sm:text-sm text-white/50 tracking-wider">
               / 0{heroSlides.length}
             </span>
           </div>
 
           {/* Dot indicators */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {heroSlides.map((_, i) => (
               <button
                 key={i}
@@ -304,8 +324,8 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                 <span
                   className={`block rounded-full transition-all duration-400 ${
                     i === current
-                      ? 'w-8 h-2 bg-gold-400'
-                      : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+                      ? 'w-6 sm:w-8 h-1.5 sm:h-2 bg-gold-400'
+                      : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-white/40 hover:bg-white/70'
                   }`}
                 />
               </button>
@@ -313,24 +333,24 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
           </div>
 
           {/* Prev / Play / Next */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={() => paginate(-1)}
-              className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
+              className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => setIsPlaying((p) => !p)}
-              className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
+              className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
             >
-              {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+              {isPlaying ? <Pause className="w-3 h-3 sm:w-4 sm:h-4" /> : <Play className="w-3 h-3 sm:w-4 sm:h-4 ml-0.5" />}
             </button>
             <button
               onClick={() => paginate(1)}
-              className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
+              className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 hover:border-white transition-all"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
@@ -350,13 +370,13 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="absolute top-24 left-0 right-0 flex justify-center pointer-events-none"
+        className="absolute top-20 sm:top-24 left-0 right-0 flex justify-center pointer-events-none"
       >
         <div className="text-center">
-          <p className="text-white/40 text-xs tracking-[0.5em] uppercase">
+          <p className="text-white/40 text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase">
             THE GRAND ALTON RESORT
           </p>
-          <p className="text-gold-400/60 text-[10px] tracking-[0.3em] uppercase mt-1">
+          <p className="text-gold-400/60 text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-1">
             UNFORGETABLE EXPERIENCE
           </p>
         </div>
@@ -368,14 +388,15 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 hover:text-white/70 transition-colors"
+        className="absolute bottom-20 sm:bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 hover:text-white/70 transition-colors"
       >
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ChevronDown className="w-5 h-5" />
+          <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.div>
+        <span className="text-[10px] hidden sm:block">Scroll</span>
       </motion.a>
     </section>
   );

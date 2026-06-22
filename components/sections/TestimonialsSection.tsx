@@ -2,10 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import { Star, Quote } from 'lucide-react';
+import { AnimatedCounter } from '@/hooks/useCountUp';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -55,6 +56,13 @@ const testimonials = [
   },
 ];
 
+const testimonialsStats = [
+  { value: 127, suffix: '+', label: 'Reviews' },
+  { value: 4.8, suffix: '/5', label: 'Average Rating', decimals: 1 },
+  { value: 98, suffix: '%', label: 'Recommend Us' },
+  { value: 500, suffix: '+', label: 'Happy Guests' },
+];
+
 export default function TestimonialsSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
@@ -67,15 +75,32 @@ export default function TestimonialsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <p className="text-gold-400 text-sm tracking-[0.2em] uppercase mb-2">Guest Reviews</p>
+          <p className="text-gold-400 text-xs sm:text-sm tracking-[0.15em] sm:tracking-[0.2em] uppercase mb-2">Guest Reviews</p>
           <h2 className="heading-lg">
             What Our <span className="text-gold-400">Guests Say</span>
           </h2>
-          <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+          <p className="text-gray-600 mt-3 sm:mt-4 max-w-2xl mx-auto text-sm sm:text-base px-4">
             Real reviews from our valued guests on Google Maps
           </p>
+        </motion.div>
+
+        {/* Stats Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12 bg-gray-50 rounded-xl p-4 sm:p-6"
+        >
+          {testimonialsStats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <p className="font-playfair text-xl sm:text-2xl font-bold text-royal-500">
+                <AnimatedCounter value={stat.value} suffix={stat.suffix || ''} duration={2000} decimals={stat.decimals || 0} />
+              </p>
+              <p className="text-gray-500 text-xs sm:text-sm">{stat.label}</p>
+            </div>
+          ))}
         </motion.div>
 
         <motion.div
@@ -93,18 +118,18 @@ export default function TestimonialsSection() {
               640: { slidesPerView: 2 },
               1024: { slidesPerView: 3 },
             }}
-            spaceBetween={24}
- className="pb-12"
+            spaceBetween={16}
+            className="pb-10 sm:pb-12"
           >
             {testimonials.map((testimonial, index) => (
               <SwiperSlide key={index}>
-                <div className="bg-gray-50 rounded-xl p-6 h-full">
-                  <Quote className="w-8 h-8 text-gold-400/30 mb-4" />
-                  <div className="flex items-center gap-1 mb-4">
+                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 h-full">
+                  <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-gold-400/30 mb-3 sm:mb-4" />
+                  <div className="flex items-center gap-1 mb-3 sm:mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className={`w-5 h-5 ${
+                        className={`w-4 h-4 sm:w-5 sm:h-5 ${
                           i < testimonial.rating
                             ? 'text-gold-400 fill-gold-400'
                             : 'text-gray-300'
@@ -112,14 +137,14 @@ export default function TestimonialsSection() {
                       />
                     ))}
                   </div>
-                  <p className="text-gray-600 mb-6 line-clamp-4">{testimonial.review}</p>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-royal-500 rounded-full flex items-center justify-center text-white font-semibold">
+                  <p className="text-gray-600 mb-4 sm:mb-6 text-xs sm:text-sm line-clamp-4">{testimonial.review}</p>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-royal-500 rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
                       {testimonial.avatar}
                     </div>
                     <div>
-                      <p className="font-semibold text-royal-500">{testimonial.name}</p>
-                      <p className="text-sm text-gray-500">{testimonial.date}</p>
+                      <p className="font-semibold text-royal-500 text-sm sm:text-base">{testimonial.name}</p>
+                      <p className="text-xs sm:text-sm text-gray-500">{testimonial.date}</p>
                     </div>
                   </div>
                 </div>
@@ -133,13 +158,13 @@ export default function TestimonialsSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center mt-8"
+          className="text-center mt-6 sm:mt-8"
         >
           <a
             href="https://maps.app.goo.gl/xTB5WaNuvTjJ3CVh7"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-royal-500 hover:text-gold-400 font-medium transition-colors"
+            className="inline-flex items-center gap-2 text-royal-500 hover:text-gold-400 font-medium transition-colors text-sm sm:text-base"
           >
             See all reviews on Google Maps
           </a>
