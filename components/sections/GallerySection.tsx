@@ -119,13 +119,13 @@ export default function GallerySection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-12"
+          className="flex flex-wrap justify-center gap-2 mb-8 md:mb-12"
         >
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeCategory === category
                   ? 'bg-royal-500 text-white shadow-lg shadow-royal-500/30'
                   : 'bg-gray-100 text-gray-600 hover:bg-royal-100 hover:text-royal-600'
@@ -136,15 +136,15 @@ export default function GallerySection() {
           ))}
         </motion.div>
 
-        {/* Responsive Masonry Grid */}
+        {/* Responsive Grid - Uniform on mobile, varied on larger screens */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
         >
           {filteredImages.map((image, index) => {
-            // Create varied sizes for masonry effect
+            // Create varied sizes for masonry effect - only on md+ screens
             const isLarge = index % 7 === 0;
             const isMedium = index % 5 === 2;
 
@@ -155,13 +155,19 @@ export default function GallerySection() {
                 animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
                 className={`
-                  relative cursor-pointer overflow-hidden rounded-lg sm:rounded-xl group
+                  relative cursor-pointer overflow-hidden rounded-lg md:rounded-xl group
                   ${isLarge ? 'md:col-span-2 md:row-span-2' : ''}
-                  ${isMedium ? 'md:row-span-2' : ''}
+                  ${isMedium ? 'md:col-span-1 md:row-span-2' : ''}
                 `}
                 onClick={() => openLightbox(index)}
               >
-                <div className={`relative w-full overflow-hidden ${isLarge ? 'aspect-square sm:aspect-[4/3]' : isMedium ? 'aspect-[3/4]' : 'aspect-[4/3] sm:aspect-square'}`}>
+                <div className={`relative w-full overflow-hidden ${
+                  isLarge
+                    ? 'aspect-square md:aspect-[4/3]'
+                    : isMedium
+                      ? 'aspect-[4/3] md:aspect-[3/4]'
+                      : 'aspect-[4/3]'
+                }`}>
                   {/* Skeleton loader */}
                   {!loadedImages.has(image.src) && (
                     <div className="absolute inset-0 bg-gray-200 animate-pulse" />
@@ -172,7 +178,7 @@ export default function GallerySection() {
                     src={image.src}
                     alt={image.title}
                     fill
-                    sizes={isLarge ? "(max-width: 768px) 100vw, 50vw" : "(max-width: 768px) 50vw, 25vw"}
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     priority={index < 6}
                     className={`object-cover transition-all duration-500 group-hover:scale-110 ${
                       loadedImages.has(image.src) ? 'opacity-100' : 'opacity-0'
@@ -182,15 +188,15 @@ export default function GallerySection() {
 
                   {/* Overlay on hover */}
                   <div className="absolute inset-0 bg-royal-900/0 group-hover:bg-royal-900/60 transition-all duration-300 flex items-center justify-center">
-                    <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-4">
-                      <p className="font-playfair text-base sm:text-lg font-bold mb-1">{image.title}</p>
-                      <p className="text-xs sm:text-sm text-white/80">{image.category}</p>
+                    <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-3 md:px-4">
+                      <p className="font-playfair text-sm md:text-base font-bold mb-1">{image.title}</p>
+                      <p className="text-xs text-white/80">{image.category}</p>
                     </div>
                   </div>
 
                   {/* Category badge */}
-                  <div className="absolute top-2 left-2 sm:top-3 sm:left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="bg-gold-400 text-royal-900 text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-full">
+                  <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="bg-gold-400 text-royal-900 text-[10px] md:text-xs font-bold px-2 py-1 rounded-full">
                       {image.category}
                     </span>
                   </div>
@@ -220,54 +226,54 @@ export default function GallerySection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
           onClick={() => setLightboxOpen(false)}
         >
           {/* Close button */}
           <button
             onClick={() => setLightboxOpen(false)}
-            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2 sm:p-3"
+            className="absolute top-3 right-3 md:top-6 md:right-6 z-10 text-white/70 hover:text-white transition-colors bg-black/40 backdrop-blur-sm rounded-full p-2.5"
             aria-label="Close lightbox"
           >
-            <X className="w-6 h-6 sm:w-8 sm:h-8" />
+            <X className="w-6 h-6" />
           </button>
 
           {/* Navigation buttons */}
           <button
             onClick={(e) => { e.stopPropagation(); prevImage(); }}
-            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2 sm:p-3 hover:bg-black/50"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors bg-black/40 backdrop-blur-sm rounded-full p-2.5"
             aria-label="Previous image"
           >
-            <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
 
           <button
             onClick={(e) => { e.stopPropagation(); nextImage(); }}
-            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2 sm:p-3 hover:bg-black/50"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 text-white/70 hover:text-white transition-colors bg-black/40 backdrop-blur-sm rounded-full p-2.5"
             aria-label="Next image"
           >
-            <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+            <ChevronRight className="w-6 h-6" />
           </button>
 
           {/* Image container */}
           <div
-            className="w-full max-w-6xl mx-4 sm:mx-8"
+            className="w-full max-w-5xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative w-full max-h-[75vh] sm:max-h-[80vh]">
+            <div className="relative w-full flex items-center justify-center min-h-[50vh] md:min-h-[60vh]">
               <Image
                 src={filteredImages[currentImageIndex]?.src || ''}
                 alt={filteredImages[currentImageIndex]?.title || ''}
                 width={1200}
                 height={800}
-                className="w-full h-auto max-h-[75vh] sm:max-h-[80vh] object-contain rounded-lg"
+                className="w-auto h-auto max-w-full max-h-[60vh] md:max-h-[70vh] object-contain rounded-lg"
                 priority
               />
             </div>
 
             {/* Image info */}
-            <div className="text-center mt-4 sm:mt-6">
-              <p className="text-white font-playfair text-lg sm:text-xl font-bold">
+            <div className="text-center mt-4">
+              <p className="text-white font-playfair text-lg font-bold">
                 {filteredImages[currentImageIndex]?.title}
               </p>
               <p className="text-white/60 text-sm mt-1">
@@ -276,15 +282,15 @@ export default function GallerySection() {
             </div>
 
             {/* Thumbnail strip */}
-            <div className="flex justify-center gap-2 mt-4 sm:mt-6 overflow-x-auto pb-2 px-4">
+            <div className="flex justify-center gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
               {filteredImages.map((img, idx) => (
                 <button
                   key={img.src + idx}
                   onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                  className={`relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden transition-all ${
+                  className={`relative flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-md overflow-hidden transition-all ${
                     idx === currentImageIndex
                       ? 'ring-2 ring-gold-400 scale-110'
-                      : 'opacity-50 hover:opacity-80'
+                      : 'opacity-60 hover:opacity-80'
                   }`}
                 >
                   <Image
