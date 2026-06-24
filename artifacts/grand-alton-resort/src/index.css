@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #0a0a0a;
+  --color-border: #e5e7eb;
+
+  --color-royal-50: #f0f4ff;
+  --color-royal-100: #dde6ff;
+  --color-royal-200: #c4d1ff;
+  --color-royal-300: #9cb4ff;
+  --color-royal-400: #738aff;
+  --color-royal-500: #1a3a6e;
+  --color-royal-600: #16326a;
+  --color-royal-700: #0f2454;
+  --color-royal-800: #0a1b3f;
+  --color-royal-900: #060f25;
+
+  --color-gold-50: #fffbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-200: #fde68a;
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #c9a84c;
+  --color-gold-500: #b8972f;
+  --color-gold-600: #a07c1a;
+  --color-gold-700: #7d5f0e;
+  --color-gold-800: #5a4409;
+  --color-gold-900: #382a04;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-playfair: 'Playfair Display', serif;
+  --font-inter: 'Inter', sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #111827;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+@layer utilities {
+  .font-playfair {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .font-inter {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .section-padding {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-top: 8rem;
+      padding-bottom: 8rem;
+    }
+  }
+
+  .container-custom {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-custom {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  .heading-lg {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1a3a6e;
+    line-height: 1.2;
+  }
+
+  @media (min-width: 640px) {
+    .heading-lg {
+      font-size: 2.25rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .heading-lg {
+      font-size: 3rem;
+    }
+  }
+
+  .card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  .text-royal-50 { color: #f0f4ff; }
+  .text-royal-100 { color: #dde6ff; }
+  .text-royal-500 { color: #1a3a6e; }
+  .text-royal-600 { color: #16326a; }
+  .text-royal-700 { color: #0f2454; }
+  .text-royal-900 { color: #060f25; }
+
+  .text-gold-300 { color: #fcd34d; }
+  .text-gold-400 { color: #c9a84c; }
+  .text-gold-500 { color: #b8972f; }
+  .text-gold-600 { color: #a07c1a; }
+
+  .bg-royal-50 { background-color: #f0f4ff; }
+  .bg-royal-100 { background-color: #dde6ff; }
+  .bg-royal-500 { background-color: #1a3a6e; }
+  .bg-royal-600 { background-color: #16326a; }
+  .bg-royal-700 { background-color: #0f2454; }
+  .bg-royal-900 { background-color: #060f25; }
+
+  .bg-gold-100 { background-color: #fef3c7; }
+  .bg-gold-400 { background-color: #c9a84c; }
+  .bg-gold-500 { background-color: #b8972f; }
+
+  .border-royal-100 { border-color: #dde6ff; }
+  .border-royal-500 { border-color: #1a3a6e; }
+  .border-gold-400 { border-color: #c9a84c; }
+
+  .ring-gold-400 { --tw-ring-color: #c9a84c; }
+  .ring-royal-500 { --tw-ring-color: #1a3a6e; }
+  .shadow-royal-500\/25 { --tw-shadow-color: rgba(26, 58, 110, 0.25); }
+
+  .fill-gold-400 { fill: #c9a84c; }
+
+  .hover\:bg-royal-50:hover { background-color: #f0f4ff; }
+  .hover\:bg-royal-500:hover { background-color: #1a3a6e; }
+  .hover\:bg-royal-600:hover { background-color: #16326a; }
+  .hover\:bg-gold-400:hover { background-color: #c9a84c; }
+  .hover\:bg-gold-500:hover { background-color: #b8972f; }
+  .hover\:text-gold-400:hover { color: #c9a84c; }
+  .hover\:text-gold-300:hover { color: #fcd34d; }
+  .hover\:text-royal-500:hover { color: #1a3a6e; }
+  .hover\:text-royal-600:hover { color: #16326a; }
+  .hover\:border-gold-400:hover { border-color: #c9a84c; }
+  .hover\:border-white:hover { border-color: #ffffff; }
+  .hover\:text-gold-600:hover { color: #a07c1a; }
+}
+
+.swiper-pagination-bullet {
+  background: #c9a84c !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #c9a84c !important;
+  width: 20px !important;
+  border-radius: 4px !important;
+}

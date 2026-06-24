@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "The Grand Alton Resort"
+version = "1.0.0"
+id = "artifacts/grand-alton-resort"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25178
+
+[services.development]
+run = "pnpm --filter @workspace/grand-alton-resort run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/grand-alton-resort", "run", "build" ]
+publicDir = "artifacts/grand-alton-resort/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25178"
+BASE_PATH = "/"
