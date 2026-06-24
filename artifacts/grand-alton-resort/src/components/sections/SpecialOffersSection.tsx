@@ -5,11 +5,41 @@ import { Heart, Calendar, Users, Building2, Tag, Percent } from 'lucide-react';
 import { AnimatedCounter } from '@/hooks/useCountUp';
 
 const offers = [
-  { icon: Heart, title: 'Honeymoon Package', description: 'Romantic getaway with candlelit dinner, spa treatment, and luxury suite', discount: 20, image: '/images/hero/hero/hero3.jpg' },
-  { icon: Calendar, title: 'Weekend Getaway', description: 'Perfect weekend escape with complementary breakfast and late checkout', discount: 15, image: '/images/hero/hero/hero1.jpg' },
-  { icon: Users, title: 'Conference Package', description: 'Business meeting solutions with AV equipment, catering, and accommodation', discount: 25, image: '/images/conference/conference/con1.jpg' },
-  { icon: Tag, title: 'Family Holiday', description: 'Fun for the whole family with kids activities and family-friendly amenities', discount: 15, image: '/images/others/others/IMG-20260618-WA0020.jpg' },
-  { icon: Building2, title: 'Corporate Discount', description: 'Special rates for corporate clients with flexible booking options', discount: 20, image: '/images/conference/conference/con2.jpg' },
+  {
+    icon: Heart,
+    title: 'Honeymoon Package',
+    description: 'Romantic escape with a candlelit lakeside dinner, couples spa, and luxurious suite upgrade.',
+    discount: 20,
+    image: '/images/offers/honeymoon.jpg',
+  },
+  {
+    icon: Calendar,
+    title: 'Weekend Getaway',
+    description: 'Perfect weekend escape with complimentary breakfast, late checkout, and Lake Victoria views.',
+    discount: 15,
+    image: '/images/offers/weekend.jpg',
+  },
+  {
+    icon: Users,
+    title: 'Conference Package',
+    description: 'All-inclusive business solutions with AV equipment, full catering, and overnight accommodation.',
+    discount: 25,
+    image: '/images/conference/conference/con1.jpg',
+  },
+  {
+    icon: Tag,
+    title: 'Family Holiday',
+    description: 'Fun for everyone — kids activities, pool access, family rooms, and complimentary meals for children.',
+    discount: 15,
+    image: '/images/offers/family.jpg',
+  },
+  {
+    icon: Building2,
+    title: 'Corporate Discount',
+    description: 'Exclusive rates for corporate clients with flexible bookings, boardroom access, and priority service.',
+    discount: 20,
+    image: '/images/offers/corporate.jpg',
+  },
 ];
 
 const offersStats = [
@@ -72,24 +102,25 @@ export default function SpecialOffersSection({ onBookOffer }: SpecialOffersSecti
               whileHover={{ y: -5 }}
               className="bg-white rounded-xl overflow-hidden shadow-lg group"
             >
-              <div className="relative h-36 sm:h-48 overflow-hidden">
+              <div className="relative h-36 sm:h-48 overflow-hidden bg-gray-200">
                 <img
                   src={offer.image}
                   alt={offer.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="eager"
                 />
-                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-gold-400 text-royal-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1">
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 bg-gold-400 text-royal-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-1 shadow-md">
                   <Percent className="w-3 h-3" />
                   {offer.discount}% OFF
                 </div>
-                <div className="absolute inset-0 bg-royal-900/30 group-hover:bg-royal-900/10 transition-colors" />
+                <div className="absolute inset-0 bg-royal-900/20 group-hover:bg-royal-900/5 transition-colors" />
               </div>
               <div className="p-4 sm:p-6">
                 <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <offer.icon className="w-5 h-5 sm:w-6 sm:h-6 text-royal-500" />
+                  <offer.icon className="w-5 h-5 sm:w-6 sm:h-6 text-royal-500 flex-shrink-0" />
                   <h3 className="font-playfair text-base sm:text-lg font-bold text-royal-500">{offer.title}</h3>
                 </div>
-                <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4">{offer.description}</p>
+                <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">{offer.description}</p>
                 <button
                   onClick={onBookOffer}
                   className="w-full bg-royal-500 text-white py-2.5 sm:py-3 rounded-md font-medium text-sm sm:text-base hover:bg-royal-600 transition-colors"

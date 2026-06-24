@@ -10,7 +10,7 @@ const heroSlides = [
     description: 'Drift into luxury in our exquisitely designed rooms with panoramic views of Kisumu.',
     cta: 'Explore Rooms',
     href: '#rooms',
-    badge: 'From KES 4,500/night',
+    badge: 'From KES 4,500 / Night',
   },
   {
     image: '/images/hero/hero/hero2.jpg',
@@ -19,7 +19,7 @@ const heroSlides = [
     description: 'Indulge in local and continental cuisine crafted by our world-class culinary team.',
     cta: 'Reserve a Table',
     href: '#restaurant',
-    badge: 'Open Daily 6am – 11pm',
+    badge: 'Open 24 Hours',
   },
   {
     image: '/images/hero/hero/hero3.jpg',
@@ -28,16 +28,16 @@ const heroSlides = [
     description: 'Create unforgettable memories in our lush garden venues and elegant event spaces.',
     cta: 'Plan Your Event',
     href: '#events',
-    badge: 'Capacity up to 200 guests',
+    badge: 'Up to 200 Guests',
   },
   {
     image: '/images/hero/hero/hero4.jpg',
     title: 'Conference',
     subtitle: 'Facilities',
-    description: 'State-of-the-art meeting rooms equipped for corporate events and workshops.',
+    description: 'State-of-the-art meeting rooms fully equipped for corporate events and workshops.',
     cta: 'Book a Venue',
     href: '#conference',
-    badge: 'AV Equipment Included',
+    badge: 'Full AV & Catering',
   },
   {
     image: '/images/hero/hero/hero5.jpg',
@@ -46,7 +46,7 @@ const heroSlides = [
     description: 'Relax in paradise by our pristine pool surrounded by lush tropical gardens.',
     cta: 'Discover Amenities',
     href: '#amenities',
-    badge: 'Open 7am – 9pm',
+    badge: 'Pool · Gardens · Gym',
   },
 ];
 
@@ -151,11 +151,34 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         </motion.div>
       </AnimatePresence>
 
+      {/* ── Branded header bar ── */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.7 }}
+        className="absolute top-0 left-0 right-0 flex justify-center pt-[72px] pointer-events-none z-10"
+      >
+        <div className="flex flex-col items-center gap-1 px-6 py-3 bg-black/30 backdrop-blur-sm border-b border-white/10 w-full">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 sm:w-12 bg-gold-400/70" />
+            <p className="text-white text-[9px] sm:text-[11px] tracking-[0.35em] sm:tracking-[0.45em] uppercase font-semibold">
+              The Grand Alton Resort
+            </p>
+            <span className="h-px w-8 sm:w-12 bg-gold-400/70" />
+          </div>
+          <p className="text-gold-400 text-[8px] sm:text-[10px] tracking-[0.25em] sm:tracking-[0.35em] uppercase font-medium">
+            Kisumu&apos;s Premier Hospitality Destination
+          </p>
+        </div>
+      </motion.div>
+
+      {/* ── Main slide content ── */}
       <div className="absolute inset-0 flex items-center">
         <div className="container-custom w-full">
           <div className="max-w-3xl">
             <AnimatePresence mode="wait">
               <motion.div key={current}>
+                {/* Badge */}
                 <motion.div
                   custom={0}
                   variants={textVariants}
@@ -170,6 +193,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   </span>
                 </motion.div>
 
+                {/* Title */}
                 <div className="overflow-hidden mb-1 sm:mb-2">
                   <motion.h1
                     custom={0.1}
@@ -195,6 +219,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   </motion.h1>
                 </div>
 
+                {/* Description */}
                 <motion.p
                   custom={0.3}
                   variants={textVariants}
@@ -206,6 +231,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
                   {slide.description}
                 </motion.p>
 
+                {/* CTAs */}
                 <motion.div
                   custom={0.4}
                   variants={textVariants}
@@ -235,7 +261,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Slide Thumbnails */}
+      {/* ── Slide Thumbnails (desktop) ── */}
       <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 hidden lg:flex flex-col gap-2 sm:gap-3">
         {heroSlides.map((s, i) => (
           <button
@@ -255,7 +281,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         ))}
       </div>
 
-      {/* Bottom Controls */}
+      {/* ── Bottom Controls ── */}
       <div className="absolute bottom-6 sm:bottom-8 left-0 right-0">
         <div className="container-custom flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-4">
@@ -310,23 +336,6 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         <div className="h-full bg-gold-400" style={{ width: `${progress}%`, transition: 'width 0.05s linear' }} />
       </div>
 
-      {/* Hotel name overlay */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="absolute top-20 sm:top-24 left-0 right-0 flex justify-center pointer-events-none"
-      >
-        <div className="text-center">
-          <p className="text-white/40 text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase">
-            THE GRAND ALTON RESORT
-          </p>
-          <p className="text-gold-400/60 text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-1">
-            UNFORGETTABLE EXPERIENCE
-          </p>
-        </div>
-      </motion.div>
-
       {/* Scroll indicator */}
       <motion.a
         href="#about"
@@ -338,10 +347,10 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}>
           <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
         </motion.div>
-        <span className="text-[10px] hidden sm:block">Scroll</span>
+        <span className="text-[10px] hidden sm:block tracking-widest uppercase">Scroll</span>
       </motion.a>
 
-      {/* Wave divider into About */}
+      {/* Wave divider */}
       <div className="absolute bottom-0 left-0 right-0 leading-none pointer-events-none">
         <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-10 sm:h-14" fill="white" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,60 C360,0 1080,0 1440,60 L1440,60 L0,60 Z" />
