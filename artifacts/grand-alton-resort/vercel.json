@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && pnpm --filter @workspace/grand-alton-resort run build",
+  "outputDirectory": "artifacts/grand-alton-resort/dist/public",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
