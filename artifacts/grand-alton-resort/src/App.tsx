@@ -17,6 +17,7 @@ import ContactSection from '@/components/sections/ContactSection';
 import FooterSection from '@/components/sections/FooterSection';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import WhatsAppDialog from '@/components/WhatsAppDialog';
+import EnquiryWidget from '@/components/EnquiryWidget';
 
 export default function App() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -50,6 +51,7 @@ export default function App() {
         <MapSection />
         <ContactSection />
         <FooterSection />
+        <EnquiryWidget />
         <WhatsAppButton onClick={openGeneral} />
         <WhatsAppDialog
           isOpen={dialogOpen}
