@@ -18,7 +18,6 @@ import TestimonialsSection from '../components/sections/TestimonialsSection';
 import MapSection from '../components/sections/MapSection';
 import ContactSection from '../components/sections/ContactSection';
 import FooterSection from '../components/sections/FooterSection';
-import PricingSection from '../components/sections/PricingSection';
 
 export default function Home() {
   const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
@@ -41,7 +40,6 @@ export default function Home() {
       <HeroSection onBookNow={() => handleOpenWhatsApp('booking')} />
       <AboutSection />
       <RoomsSection onBookNow={() => handleOpenWhatsApp('booking')} />
-      <PricingSection />
       <RestaurantSection onReserveTable={() => handleOpenWhatsApp('booking')} />
       <ConferenceSection onBookNow={() => handleOpenWhatsApp('booking')} />
       <EventsSection onPlanEvent={() => handleOpenWhatsApp('booking')} />
