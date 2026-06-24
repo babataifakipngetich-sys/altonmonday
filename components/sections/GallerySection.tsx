@@ -136,74 +136,57 @@ export default function GallerySection() {
           ))}
         </motion.div>
 
-        {/* Responsive Grid - Uniform on mobile, varied on larger screens */}
+        {/* Responsive Grid - uniform, consistently aligned cells across all devices */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4"
         >
-          {filteredImages.map((image, index) => {
-            // Create varied sizes for masonry effect - only on md+ screens
-            const isLarge = index % 7 === 0;
-            const isMedium = index % 5 === 2;
+          {filteredImages.map((image, index) => (
+            <motion.div
+              key={image.src + index}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
+              className="relative cursor-pointer overflow-hidden rounded-lg md:rounded-xl group"
+              onClick={() => openLightbox(index)}
+            >
+              <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-200">
+                {/* Skeleton loader (sits behind the image until it paints over) */}
+                {!loadedImages.has(image.src) && (
+                  <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+                )}
 
-            return (
-              <motion.div
-                key={image.src + index}
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className={`
-                  relative cursor-pointer overflow-hidden rounded-lg md:rounded-xl group
-                  ${isLarge ? 'md:col-span-2 md:row-span-2' : ''}
-                  ${isMedium ? 'md:col-span-1 md:row-span-2' : ''}
-                `}
-                onClick={() => openLightbox(index)}
-              >
-                <div className={`relative w-full overflow-hidden ${
-                  isLarge
-                    ? 'aspect-square md:aspect-[4/3]'
-                    : isMedium
-                      ? 'aspect-[4/3] md:aspect-[3/4]'
-                      : 'aspect-[4/3]'
-                }`}>
-                  {/* Skeleton loader */}
-                  {!loadedImages.has(image.src) && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse" />
-                  )}
+                {/* Next.js Image with priority for first few */}
+                <Image
+                  src={image.src}
+                  alt={image.title}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  priority={index < 6}
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  onLoad={() => handleImageLoad(image.src)}
+                  onError={() => handleImageLoad(image.src)}
+                />
 
-                  {/* Next.js Image with priority for first few */}
-                  <Image
-                    src={image.src}
-                    alt={image.title}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    priority={index < 6}
-                    className={`object-cover transition-all duration-500 group-hover:scale-110 ${
-                      loadedImages.has(image.src) ? 'opacity-100' : 'opacity-0'
-                    }`}
-                    onLoad={() => handleImageLoad(image.src)}
-                  />
-
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-royal-900/0 group-hover:bg-royal-900/60 transition-all duration-300 flex items-center justify-center">
-                    <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-3 md:px-4">
-                      <p className="font-playfair text-sm md:text-base font-bold mb-1">{image.title}</p>
-                      <p className="text-xs text-white/80">{image.category}</p>
-                    </div>
-                  </div>
-
-                  {/* Category badge */}
-                  <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="bg-gold-400 text-royal-900 text-[10px] md:text-xs font-bold px-2 py-1 rounded-full">
-                      {image.category}
-                    </span>
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-royal-900/0 group-hover:bg-royal-900/60 transition-all duration-300 flex items-center justify-center">
+                  <div className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center px-3 md:px-4">
+                    <p className="font-playfair text-sm md:text-base font-bold mb-1">{image.title}</p>
+                    <p className="text-xs text-white/80">{image.category}</p>
                   </div>
                 </div>
-              </motion.div>
-            );
-          })}
+
+                {/* Category badge */}
+                <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="bg-gold-400 text-royal-900 text-[10px] md:text-xs font-bold px-2 py-1 rounded-full">
+                    {image.category}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
 
         {/* Image count indicator */}
