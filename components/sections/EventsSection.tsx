@@ -63,7 +63,7 @@ export default function EventsSection({ onPlanEvent }: EventsSectionProps) {
             >
               {eventImages.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative aspect-[4/3]">
+                  <div className="relative h-72 sm:h-80 lg:h-[420px] w-full">
                     <Image
                       src={image}
                       alt={`Event ${index + 1}`}
