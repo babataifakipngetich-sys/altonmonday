@@ -34,7 +34,7 @@ export default function RestaurantSection({ onReserveTable }: RestaurantSectionP
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="restaurant" className="section-padding bg-royal-900 text-white">
+    <section id="restaurant" className="section-padding bg-royal-900 text-white relative">
       <div className="container-custom">
         <div ref={ref} className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* Content Side */}
@@ -198,6 +198,13 @@ export default function RestaurantSection({ onReserveTable }: RestaurantSectionP
             </div>
           </div>
         </motion.div>
+      </div>
+
+      {/* Wave divider → Conference (white) */}
+      <div className="absolute bottom-0 left-0 right-0 leading-none pointer-events-none">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-10 sm:h-14" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,60 C480,0 960,0 1440,60 L1440,60 L0,60 Z" />
+        </svg>
       </div>
     </section>
   );

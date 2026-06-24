@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "1z-gxwU1-ou6jYuYzf_SK"
+uri = "file://grand-alton-resort-export.zip"
+type = "unspecified"
+title = "The Grand Alton Resort — Full Project Export"

@@ -29,7 +29,7 @@ export default function AmenitiesSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="amenities" className="section-padding bg-royal-900 text-white">
+    <section id="amenities" className="section-padding bg-royal-900 text-white relative">
       <div className="container-custom">
         <motion.div
           ref={ref}
@@ -80,6 +80,13 @@ export default function AmenitiesSection() {
             </motion.div>
           ))}
         </div>
+      </div>
+
+      {/* Wave divider → Activities (white) */}
+      <div className="absolute bottom-0 left-0 right-0 leading-none pointer-events-none">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-10 sm:h-14" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,60 C360,0 1080,0 1440,60 L1440,60 L0,60 Z" />
+        </svg>
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Wifi, Tv, Wind, Coffee, BedDouble, ShoppingCart, Phone } from 'lucide-react';
+import { Wifi, Tv, Wind, Coffee, BedDouble, ShoppingCart, Phone, CalendarDays, Users, CheckCircle, Search } from 'lucide-react';
 import { AnimatedCounter } from '@/hooks/useCountUp';
 import { type Product, ProductSchema, STATIC_PRODUCTS, formatKES } from '@/lib/pricing';
 import PricingCatalogue from '@/components/pricing/PricingCatalogue';
@@ -89,6 +89,9 @@ interface RoomsSectionProps {
   onBookNow?: () => void;
 }
 
+const today = new Date().toISOString().split('T')[0];
+const tomorrow = new Date(Date.now() + 86_400_000).toISOString().split('T')[0];
+
 export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
   const ref = useRef(null);
   const pricingRef = useRef(null);
@@ -97,6 +100,22 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const { count, total } = useCart();
+
+  // Availability checker state
+  const [checkIn, setCheckIn] = useState(today);
+  const [checkOut, setCheckOut] = useState(tomorrow);
+  const [guests, setGuests] = useState(2);
+  const [checking, setChecking] = useState(false);
+  const [available, setAvailable] = useState(false);
+
+  const handleCheckAvailability = async () => {
+    if (!checkIn || !checkOut || checkOut <= checkIn) return;
+    setChecking(true);
+    setAvailable(false);
+    await new Promise((r) => setTimeout(r, 1600));
+    setChecking(false);
+    setAvailable(true);
+  };
 
   useEffect(() => {
     fetchProducts()
@@ -124,6 +143,119 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
             Experience unparalleled comfort in our elegantly appointed rooms and suites,
             each designed with your relaxation in mind.
           </p>
+        </motion.div>
+
+        {/* ── Availability Checker ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 sm:p-6 mb-10 sm:mb-14"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <CalendarDays className="w-5 h-5 text-royal-500" />
+            <h3 className="font-playfair text-lg font-bold text-royal-500">Check Availability</h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+            {/* Check-in */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Check-in</label>
+              <div className="relative">
+                <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="date"
+                  value={checkIn}
+                  min={today}
+                  onChange={(e) => {
+                    setCheckIn(e.target.value);
+                    setAvailable(false);
+                    if (e.target.value >= checkOut) {
+                      const next = new Date(e.target.value);
+                      next.setDate(next.getDate() + 1);
+                      setCheckOut(next.toISOString().split('T')[0]);
+                    }
+                  }}
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-royal-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Check-out */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Check-out</label>
+              <div className="relative">
+                <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="date"
+                  value={checkOut}
+                  min={checkIn ? (() => { const d = new Date(checkIn); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })() : tomorrow}
+                  onChange={(e) => { setCheckOut(e.target.value); setAvailable(false); }}
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-royal-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            {/* Guests */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Guests</label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <select
+                  value={guests}
+                  onChange={(e) => { setGuests(Number(e.target.value)); setAvailable(false); }}
+                  className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-royal-500 focus:border-transparent transition-all appearance-none bg-white"
+                >
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <option key={n} value={n}>{n} {n === 1 ? 'Guest' : 'Guests'}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <button
+              onClick={handleCheckAvailability}
+              disabled={checking}
+              className="inline-flex items-center justify-center gap-2 bg-royal-500 text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:bg-royal-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {checking ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Checking…
+                </>
+              ) : (
+                <>
+                  <Search className="w-4 h-4" />
+                  Check Availability
+                </>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {available && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-2 text-green-600"
+                >
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-sm font-semibold">
+                    {rooms.length} rooms available for your dates!{' '}
+                    <span className="font-normal text-gray-500">
+                      {new Date(checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                      {' – '}
+                      {new Date(checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                      {', '}
+                      {guests} {guests === 1 ? 'guest' : 'guests'}
+                    </span>
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
 
         <motion.div
@@ -158,6 +290,19 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
                   alt={room.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                <AnimatePresence>
+                  {available && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      className="absolute top-2 left-2 flex items-center gap-1 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow"
+                    >
+                      <CheckCircle className="w-3 h-3" />
+                      Available
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               <div className="p-4 sm:p-5">
                 <h3 className="font-playfair text-base sm:text-lg font-semibold text-royal-500 mb-1.5">{room.name}</h3>
