@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
 import Link from 'next/link';
+import CartSheet from '@/components/pricing/CartSheet';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
   { name: 'About Us', href: '#about' },
   { name: 'Rooms & Suites', href: '#rooms' },
+  { name: 'Pricing', href: '#pricing' },
   { name: 'Restaurant', href: '#restaurant' },
   { name: 'Conference', href: '#conference' },
   { name: 'Events', href: '#events' },
@@ -86,6 +88,8 @@ export default function Navigation({ onBookNow }: NavigationProps) {
               </div>
             </div>
 
+            <CartSheet />
+
             <button
               onClick={onBookNow}
               className="flex items-center gap-2 bg-gold-400 text-royal-900 px-4 py-2 rounded-md font-semibold text-sm hover:bg-gold-500 transition-colors"
@@ -125,16 +129,19 @@ export default function Navigation({ onBookNow }: NavigationProps) {
                   {link.name}
                 </Link>
               ))}
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  onBookNow?.();
-                }}
-                className="flex items-center justify-center gap-2 bg-gold-400 text-royal-900 px-4 py-3 rounded-md font-semibold mt-4 w-full"
-              >
-                <Phone className="w-4 h-4" />
-                Book Now
-              </button>
+              <div className="flex gap-3 mt-4">
+                <CartSheet />
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    onBookNow?.();
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 bg-gold-400 text-royal-900 px-4 py-3 rounded-md font-semibold"
+                >
+                  <Phone className="w-4 h-4" />
+                  Book Now
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
