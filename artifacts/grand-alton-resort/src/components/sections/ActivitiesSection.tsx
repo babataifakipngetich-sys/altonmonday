@@ -5,12 +5,42 @@ import { MapPin, Footprints, Sailboat, Bird, Landmark, Waves } from 'lucide-reac
 import { AnimatedCounter } from '@/hooks/useCountUp';
 
 const activities = [
-  { icon: MapPin, title: 'City Tours', description: 'Explore Kisumu city and discover its rich history', image: '/images/hero/hero/hero1.jpg' },
-  { icon: Footprints, title: 'Nature Walks', description: 'Scenic trails through beautiful landscapes', image: '/images/others/others/IMG-20260618-WA0029.jpg' },
-  { icon: Sailboat, title: 'Boat Excursions on Lake Victoria', description: "Experience Africa's largest freshwater lake", image: '/images/hero/hero/hero2.jpg' },
-  { icon: Bird, title: 'Bird Watching', description: 'Discover diverse bird species in their natural habitat', image: '/images/others/others/IMG-20260618-WA0022.jpg' },
-  { icon: Landmark, title: 'Cultural Experiences', description: 'Immerse yourself in local traditions and heritage', image: '/images/hero/hero/hero3.jpg' },
-  { icon: Waves, title: 'Relaxation by the Pool', description: 'Unwind in our pristine swimming pool', image: '/images/hero/hero/hero5.jpg' },
+  {
+    icon: MapPin,
+    title: 'City Tours',
+    description: 'Explore Kisumu city — vibrant markets, the iconic lakefront, and rich Luo heritage just minutes away.',
+    image: '/images/activities/city-tours.jpg',
+  },
+  {
+    icon: Footprints,
+    title: 'Nature Walks',
+    description: 'Stroll through Kisumu Impala Sanctuary and encounter impalas, monkeys, and lush tropical greenery.',
+    image: '/images/activities/nature-walks.jpg',
+  },
+  {
+    icon: Sailboat,
+    title: 'Boat Excursions on Lake Victoria',
+    description: "Sail across Africa's largest freshwater lake — spot fishermen, hippos, and breathtaking sunsets.",
+    image: '/images/activities/boat-excursions.jpg',
+  },
+  {
+    icon: Bird,
+    title: 'Bird Watching',
+    description: 'Spot the rare Shoebill Stork and 300+ species thriving in the wetlands fringing Lake Victoria.',
+    image: '/images/activities/bird-watching.jpg',
+  },
+  {
+    icon: Landmark,
+    title: 'Cultural Experiences',
+    description: 'Visit Kisumu Museum, explore traditional Luo homesteads, and immerse yourself in living heritage.',
+    image: '/images/activities/cultural.webp',
+  },
+  {
+    icon: Waves,
+    title: 'Relaxation by the Pool',
+    description: 'Unwind in our pristine pool surrounded by tropical gardens — your private oasis within the resort.',
+    image: '/images/activities/pool.jpg',
+  },
 ];
 
 const activitiesStats = [
@@ -68,17 +98,18 @@ export default function ActivitiesSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="relative group overflow-hidden rounded-xl cursor-pointer card-hover"
             >
-              <div className="relative h-48 sm:h-72 overflow-hidden">
+              <div className="relative h-48 sm:h-72 overflow-hidden bg-gray-200">
                 <img
                   src={activity.image}
                   alt={activity.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="eager"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-royal-900/80 to-transparent flex flex-col justify-end p-4 sm:p-6">
+              <div className="absolute inset-0 bg-gradient-to-t from-royal-900/85 via-royal-900/20 to-transparent flex flex-col justify-end p-4 sm:p-6">
                 <activity.icon className="w-8 h-8 sm:w-10 sm:h-10 text-gold-400 mb-2 sm:mb-3" />
                 <h3 className="font-playfair text-lg sm:text-xl font-bold text-white mb-0.5 sm:mb-1">{activity.title}</h3>
-                <p className="text-white/80 text-xs sm:text-sm">{activity.description}</p>
+                <p className="text-white/80 text-xs sm:text-sm leading-relaxed">{activity.description}</p>
               </div>
             </motion.div>
           ))}
