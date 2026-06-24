@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone } from 'lucide-react';
 import Link from 'next/link';
 import CartSheet from '@/components/pricing/CartSheet';
+import Logo from '@/components/Logo';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
@@ -49,9 +50,16 @@ export default function Navigation({ onBookNow }: NavigationProps) {
     >
       <div className="container-custom">
         <div className="flex items-center justify-between">
-          <Link href="#home" className="flex items-center gap-2">
-            <div className={`font-playfair text-xl md:text-2xl font-bold ${isScrolled ? 'text-white' : 'text-white'}`}>
-              THE GRAND ALTON RESORT
+          <Link href="#home" className="flex items-center gap-3 group">
+            <Logo size={44} className="shrink-0 drop-shadow-md transition-transform duration-300 group-hover:scale-105" />
+            <div className="leading-none">
+              <p className="text-[9px] md:text-[10px] tracking-[0.35em] text-gold-400 font-medium uppercase mb-0.5">
+                The Grand
+              </p>
+              <p className="font-playfair text-lg md:text-2xl font-bold tracking-wide text-white">
+                ALTON{' '}
+                <span className="text-gold-400">RESORT</span>
+              </p>
             </div>
           </Link>
 

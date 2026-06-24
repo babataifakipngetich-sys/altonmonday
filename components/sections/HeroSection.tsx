@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { ChevronDown, Calendar, ArrowRight, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const heroSlides = [
   {
@@ -370,15 +371,34 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="absolute top-20 sm:top-24 left-0 right-0 flex justify-center pointer-events-none"
+        className="absolute top-[4.5rem] sm:top-24 left-0 right-0 flex justify-center pointer-events-none px-4"
       >
-        <div className="text-center">
-          <p className="text-white/40 text-[10px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase">
-            THE GRAND ALTON RESORT
-          </p>
-          <p className="text-gold-400/60 text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-1">
-            UNFORGETABLE EXPERIENCE
-          </p>
+        <div className="flex flex-col items-center text-center">
+          <Logo size={52} className="mb-2 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]" />
+
+          {/* Top kicker */}
+          <span className="text-gold-400 text-[9px] sm:text-xs tracking-[0.4em] sm:tracking-[0.5em] uppercase font-medium">
+            The Grand
+          </span>
+
+          {/* Main wordmark — blue & white luxury treatment */}
+          <h2 className="font-playfair font-bold leading-none mt-1 flex items-end gap-2 sm:gap-3">
+            <span className="text-2xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] tracking-wide">
+              ALTON
+            </span>
+            <span className="text-2xl sm:text-4xl md:text-5xl text-gold-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.6)] tracking-wide">
+              RESORT
+            </span>
+          </h2>
+
+          {/* Divider + tagline */}
+          <div className="flex items-center gap-2 sm:gap-3 mt-2">
+            <span className="h-px w-6 sm:w-10 bg-gradient-to-r from-transparent to-gold-400" />
+            <span className="text-white/80 text-[8px] sm:text-[11px] tracking-[0.25em] sm:tracking-[0.35em] uppercase italic font-light">
+              An Unforgettable Experience
+            </span>
+            <span className="h-px w-6 sm:w-10 bg-gradient-to-l from-transparent to-gold-400" />
+          </div>
         </div>
       </motion.div>
 
