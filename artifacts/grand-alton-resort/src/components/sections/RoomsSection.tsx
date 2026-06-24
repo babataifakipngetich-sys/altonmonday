@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
-import { Wifi, Tv, Wind, Coffee, BedDouble, ShoppingCart, Phone, CalendarDays, Users, CheckCircle, Search } from 'lucide-react';
+import { Wifi, Tv, Wind, Coffee, BedDouble, ShoppingCart, Phone, CalendarDays, Users, CheckCircle, Search, MessageCircle, Mail } from 'lucide-react';
 import { AnimatedCounter } from '@/hooks/useCountUp';
 import { type Product, ProductSchema, STATIC_PRODUCTS, formatKES } from '@/lib/pricing';
 import PricingCatalogue from '@/components/pricing/PricingCatalogue';
@@ -10,6 +10,9 @@ import { useCart } from '@/context/CartContext';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+const WHATSAPP_NUMBER = '254794000020';
+const EMAIL_ADDRESS = 'thegrandaltonresort@gmail.com';
 
 const rooms = [
   {
@@ -85,6 +88,47 @@ async function fetchProducts(): Promise<Product[]> {
   }
 }
 
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function buildWhatsAppURL(checkIn: string, checkOut: string, guests: number) {
+  const nights = Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86_400_000));
+  const msg = [
+    '🏨 *Room Booking Enquiry – The Grand Alton Resort*',
+    '',
+    `📅 Check-in:  ${formatDate(checkIn)}`,
+    `📅 Check-out: ${formatDate(checkOut)}`,
+    `🌙 Nights:    ${nights}`,
+    `👥 Guests:    ${guests}`,
+    '',
+    'Please confirm availability and share the room rates.',
+    '',
+    'Thank you!',
+  ].join('\n');
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+function buildEmailURL(checkIn: string, checkOut: string, guests: number) {
+  const nights = Math.max(1, Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86_400_000));
+  const subject = 'Room Booking Enquiry – The Grand Alton Resort';
+  const body = [
+    'Dear Grand Alton Resort Team,',
+    '',
+    'I would like to enquire about room availability for the following dates:',
+    '',
+    `Check-in:  ${formatDate(checkIn)}`,
+    `Check-out: ${formatDate(checkOut)}`,
+    `Nights:    ${nights}`,
+    `Guests:    ${guests}`,
+    '',
+    'Kindly confirm availability and share the applicable room rates.',
+    '',
+    'Thank you.',
+  ].join('\n');
+  return `mailto:${EMAIL_ADDRESS}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 interface RoomsSectionProps {
   onBookNow?: () => void;
 }
@@ -101,20 +145,31 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const { count, total } = useCart();
 
-  // Availability checker state
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(tomorrow);
   const [guests, setGuests] = useState(2);
   const [checking, setChecking] = useState(false);
   const [available, setAvailable] = useState(false);
+  const [sent, setSent] = useState<'whatsapp' | 'email' | null>(null);
 
   const handleCheckAvailability = async () => {
     if (!checkIn || !checkOut || checkOut <= checkIn) return;
     setChecking(true);
     setAvailable(false);
+    setSent(null);
     await new Promise((r) => setTimeout(r, 1600));
     setChecking(false);
     setAvailable(true);
+  };
+
+  const handleWhatsApp = () => {
+    window.open(buildWhatsAppURL(checkIn, checkOut, guests), '_blank');
+    setSent('whatsapp');
+  };
+
+  const handleEmail = () => {
+    window.location.href = buildEmailURL(checkIn, checkOut, guests);
+    setSent('email');
   };
 
   useEffect(() => {
@@ -170,6 +225,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
                   onChange={(e) => {
                     setCheckIn(e.target.value);
                     setAvailable(false);
+                    setSent(null);
                     if (e.target.value >= checkOut) {
                       const next = new Date(e.target.value);
                       next.setDate(next.getDate() + 1);
@@ -190,7 +246,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
                   type="date"
                   value={checkOut}
                   min={checkIn ? (() => { const d = new Date(checkIn); d.setDate(d.getDate() + 1); return d.toISOString().split('T')[0]; })() : tomorrow}
-                  onChange={(e) => { setCheckOut(e.target.value); setAvailable(false); }}
+                  onChange={(e) => { setCheckOut(e.target.value); setAvailable(false); setSent(null); }}
                   className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-royal-500 focus:border-transparent transition-all"
                 />
               </div>
@@ -203,7 +259,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 <select
                   value={guests}
-                  onChange={(e) => { setGuests(Number(e.target.value)); setAvailable(false); }}
+                  onChange={(e) => { setGuests(Number(e.target.value)); setAvailable(false); setSent(null); }}
                   className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-700 focus:ring-2 focus:ring-royal-500 focus:border-transparent transition-all appearance-none bg-white"
                 >
                   {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -214,6 +270,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
             </div>
           </div>
 
+          {/* Check button row */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <button
               onClick={handleCheckAvailability}
@@ -234,7 +291,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
             </button>
 
             <AnimatePresence>
-              {available && (
+              {available && !sent && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -243,7 +300,7 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
                 >
                   <CheckCircle className="w-5 h-5 flex-shrink-0" />
                   <span className="text-sm font-semibold">
-                    {rooms.length} rooms available for your dates!{' '}
+                    {rooms.length} rooms available!{' '}
                     <span className="font-normal text-gray-500">
                       {new Date(checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                       {' – '}
@@ -256,6 +313,68 @@ export default function RoomsSection({ onBookNow }: RoomsSectionProps) {
               )}
             </AnimatePresence>
           </div>
+
+          {/* Booking action buttons — shown after availability confirmed */}
+          <AnimatePresence>
+            {available && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.35 }}
+                className="mt-5 border-t border-gray-100 pt-5"
+              >
+                <p className="text-sm font-semibold text-gray-700 mb-3">
+                  Book your stay — we'll confirm within <span className="text-royal-500">1 hour</span>:
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* WhatsApp */}
+                  <button
+                    onClick={handleWhatsApp}
+                    className="flex-1 inline-flex items-center justify-center gap-2.5 bg-[#25D366] hover:bg-[#1ebe5c] text-white px-5 py-3 rounded-xl font-semibold text-sm transition-colors shadow-md shadow-green-100"
+                  >
+                    <MessageCircle className="w-4 h-4 flex-shrink-0" />
+                    Book via WhatsApp
+                  </button>
+
+                  {/* Email */}
+                  <button
+                    onClick={handleEmail}
+                    className="flex-1 inline-flex items-center justify-center gap-2.5 bg-royal-500 hover:bg-royal-600 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-colors shadow-md shadow-blue-100"
+                  >
+                    <Mail className="w-4 h-4 flex-shrink-0" />
+                    Book via Email
+                  </button>
+                </div>
+
+                {/* Confirmation message shown after sending */}
+                <AnimatePresence>
+                  {sent && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-4 flex items-start gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3"
+                    >
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-green-700">
+                          {sent === 'whatsapp' ? 'WhatsApp message sent!' : 'Email opened!'}
+                        </p>
+                        <p className="text-xs text-green-600 mt-0.5">
+                          Thank you! Our team will reply{' '}
+                          <span className="font-semibold">instantly to within 1 hour</span>.
+                          We look forward to hosting you at The Grand Alton Resort.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         <motion.div
