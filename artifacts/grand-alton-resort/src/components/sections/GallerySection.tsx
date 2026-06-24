@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, Plus } from 'lucide-react';
 
 const categories = ['All', 'Rooms', 'Restaurant', 'Conference', 'Events', 'Gardens'];
@@ -29,20 +29,16 @@ const PAGE_SIZE = 9;
 
 function GalleryCard({
   image,
-  index,
   onClick,
+  visible,
 }: {
   image: (typeof galleryImages)[0];
-  index: number;
   onClick: () => void;
+  visible: boolean;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: '-30px' }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3) }}
-      className="relative overflow-hidden rounded-xl cursor-pointer group bg-gray-200 w-full"
+    <div
+      className={`relative overflow-hidden rounded-xl cursor-pointer group bg-gray-100 w-full transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
       style={{ breakInside: 'avoid', marginBottom: '12px' }}
       onClick={onClick}
     >
@@ -50,20 +46,61 @@ function GalleryCard({
         src={image.src}
         alt={image.title}
         className="w-full h-auto block transition-transform duration-500 group-hover:scale-105"
-        loading={index < 6 ? 'eager' : 'lazy'}
+        loading="eager"
+        decoding="async"
       />
-      {/* Hover overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
         <p className="text-white font-playfair text-sm font-semibold leading-tight">{image.title}</p>
         <span className="inline-block mt-1 w-fit text-[10px] font-bold px-2 py-0.5 rounded-full bg-gold-400 text-royal-900">
           {image.category}
         </span>
       </div>
-      {/* Zoom icon */}
       <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow hidden group-hover:flex items-center justify-center">
         <ZoomIn className="w-3.5 h-3.5 text-royal-500" />
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+function MasonryGrid({
+  items,
+  cols,
+  onClickItem,
+  visible,
+}: {
+  items: typeof galleryImages;
+  cols: number;
+  onClickItem: (i: number) => void;
+  visible: boolean;
+}) {
+  const columns: (typeof galleryImages)[] = Array.from({ length: cols }, () => []);
+  items.forEach((item, i) => columns[i % cols].push(item));
+
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gap: '12px',
+        alignItems: 'start',
+      }}
+    >
+      {columns.map((col, ci) => (
+        <div key={ci} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {col.map((image) => {
+            const flatIndex = items.indexOf(image);
+            return (
+              <GalleryCard
+                key={image.src}
+                image={image}
+                onClick={() => onClickItem(flatIndex)}
+                visible={visible}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -72,9 +109,13 @@ export default function GallerySection() {
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const filtered = activeCategory === 'All'
-    ? galleryImages
-    : galleryImages.filter((img) => img.category === activeCategory);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: '0px 0px -80px 0px' });
+
+  const filtered =
+    activeCategory === 'All'
+      ? galleryImages
+      : galleryImages.filter((img) => img.category === activeCategory);
 
   const displayed = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
@@ -109,46 +150,15 @@ export default function GallerySection() {
     };
   }, [lightboxIndex, prev, next]);
 
-  /* Split images into columns (round-robin) for true masonry */
-  function splitColumns(items: typeof displayed, n: number) {
-    const cols: typeof items[] = Array.from({ length: n }, () => []);
-    items.forEach((item, i) => cols[i % n].push(item));
-    return cols;
-  }
-
-  const cols2 = splitColumns(displayed, 2);
-  const cols3 = splitColumns(displayed, 3);
-  const cols4 = splitColumns(displayed, 4);
-
-  function renderColumn(col: typeof displayed, colIndex: number, globalOffset: number) {
-    return (
-      <div key={colIndex} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {col.map((image, rowIndex) => {
-          const globalIndex = rowIndex * (col.length === 0 ? 1 : displayed.length) + colIndex;
-          const flatIndex = displayed.indexOf(image);
-          return (
-            <GalleryCard
-              key={image.src + flatIndex}
-              image={image}
-              index={flatIndex}
-              onClick={() => setLightboxIndex(flatIndex)}
-            />
-          );
-        })}
-      </div>
-    );
-  }
-
   return (
-    <section id="gallery" className="section-padding bg-white">
+    <section id="gallery" ref={sectionRef} className="section-padding bg-white">
       <div className="container-custom">
 
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
           <p className="text-gold-400 text-xs sm:text-sm tracking-[0.2em] uppercase mb-2">Visual Tour</p>
@@ -163,8 +173,7 @@ export default function GallerySection() {
         {/* Filter tabs */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.4, delay: 0.1 }}
           className="flex flex-wrap justify-center gap-2 mb-8"
         >
@@ -183,37 +192,26 @@ export default function GallerySection() {
           ))}
         </motion.div>
 
-        {/* Masonry grid — responsive via hidden/block */}
+        {/* Masonry grid — single component, CSS breakpoints via inline style */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeCategory + visible}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
           >
-            {/* Mobile: 2 columns */}
-            <div
-              className="sm:hidden"
-              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'start' }}
-            >
-              {cols2.map((col, ci) => renderColumn(col, ci, 0))}
+            {/* Mobile: 2 cols */}
+            <div className="sm:hidden">
+              <MasonryGrid items={displayed} cols={2} onClickItem={setLightboxIndex} visible={inView} />
             </div>
-
-            {/* Tablet: 3 columns */}
-            <div
-              className="hidden sm:grid lg:hidden"
-              style={{ gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', alignItems: 'start' }}
-            >
-              {cols3.map((col, ci) => renderColumn(col, ci, 0))}
+            {/* Tablet: 3 cols */}
+            <div className="hidden sm:block lg:hidden">
+              <MasonryGrid items={displayed} cols={3} onClickItem={setLightboxIndex} visible={inView} />
             </div>
-
-            {/* Desktop: 4 columns */}
-            <div
-              className="hidden lg:grid"
-              style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px', alignItems: 'start' }}
-            >
-              {cols4.map((col, ci) => renderColumn(col, ci, 0))}
+            {/* Desktop: 4 cols */}
+            <div className="hidden lg:block">
+              <MasonryGrid items={displayed} cols={4} onClickItem={setLightboxIndex} visible={inView} />
             </div>
           </motion.div>
         </AnimatePresence>
